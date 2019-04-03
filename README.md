@@ -1,6 +1,6 @@
 # CMPLXSYS530
 
-### Model Proposal for Lea Boreland: Rule-Setting and Hierarchy for Incentive Compatibility 
+### Model Proposal: Designing for Incentive Compatibility in Organizational Rule-Setting
 
 ### Lea Boreland 
 
@@ -51,6 +51,67 @@ On a given tick:
 2. Graphics are updated to represent the incentive compatibility of actors.
 3. Parent nodes (all nodes besides the leaves) dole out promotions. They pick their highest-achieving son/daughter, which then takes over their position in the event that they themselves have been promoted. 
 
+##### Current Progress:
+
+class Organization: 
+
+    def Global_compatibility(self):
+        compatibility = 0                                                  #result is global compatibility 
+        queue = []                                                         #queue is our tree traversal list  
+        queue.append(self.tree.root)                                       #add the root to the queue 
+        while len(queue) > 0:                                              #then, while we still have nodes to traverse:
+            currentnode = queue[0]                                         #we name the node we are on currentnode
+            del queue[0]                                                   #so we don't check it anymore. 
+            for i in currentnode.children:                                 #add every child of currentnode to queue
+                queue.append(i)                                            #we traverse these newly added nodes later!
+            localcompatibility = currentnode.Local_Compatibility()         #delegates to the node method 
+            compatibility += localcompatibility
+        return compatibility 
+    
+    def Dispense_Promotions(self, Tree):                                   #need to change so that only nodes that have been promoted dispense promotions  
+        queue = []
+        queue.append(self.tree.root)
+        while len(queue) > 0:
+            currentnode = queue[0]
+            del queue[0]
+            for i in currentnode.children:
+                queue.append(i)
+            currentnode.Local_Promotion()                                  #delegates to the node method 
+        return
+
+    def The_Law(self):                                                      # law is how rules are set, rules are what is set
+        rule = []
+        for i in self.parent.personality: #right now rules are just rules of my parent 
+            rule.append(i)
+        return rule
+ 
+ class Node (object):
+    
+    def Assign_Personality(self):                             # gives each node a random preference set in range 
+        self.Preferences = []
+        for i in range(0, traits):
+            x = random.randint(1, complexity)
+            self.Preferences.append(x)
+        return   
+
+    def Local_Compatibility(self):
+        self.rules = The_Law()
+        for i in self.Personality:  
+            if i == self.rules:
+                self.LocalCompatibility += 1
+        return self.LocalCompatibility( self , root )
+    
+    def Local_Promotion(self):
+        for i in self.children: 
+            performance.append(i, i.localcompatibility)
+        performance.sort(key=lambda x: x[1])
+        performance.reverse()
+        temp = performance[0]
+        newboss = temp[0]
+        self.Preferences = newboss.Preferences
+        return
+
+
 #### 4) Model Parameters and Initialization
 
 Parameters:
@@ -62,6 +123,44 @@ Parameters:
 Initialization: 
 1. A tree is built under the specifications of hierarchy.
 2. Agents are initialized under the specifications of length and complexity. 
+
+##### Current Progress:
+
+class Tree:
+    
+    def __init__(self):
+        self.root = Node()
+        self.Build_Tree()
+        
+    def Build_Tree(self):                                  
+        world = []
+        temp = []
+        firstrun = True                                                    # special procedures for the root
+        for i in hierarchy:                                                # creates levels of hierarchy
+            for children in range(0, i):                                   # each node spawn children
+                if firstrun == True:                                       # procedures for the root to have children
+                    a = self.root.Add_Child()  
+                    world.append(a)
+                else:                                                      # procedures for non-root nodes to have children 
+                    for i in world:                                        # we add the necessary number of children for each parent at each level. all the while we are adding the kids to their own temp list, because they will be parents someday too. at the end we swap the lists. 
+                        a = i.Add_Child()
+                        temp.append(a) 
+            world = temp 
+            temp = []
+            firstrun = False                                               # turns off the boolean after root
+        return
+        
+  class Node:
+    
+    def __init__(self): #creates root
+        self.parent = None
+        self.children = []
+        self.Assign_Personality()
+        
+    def Add_Child(self): #creates nodes after root 
+        newnode = Node()
+        newnode.parent = self
+        self.children.append(newnode)
 
 #### 5) Assessment and Outcome Measures
 
