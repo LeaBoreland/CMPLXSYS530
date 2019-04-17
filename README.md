@@ -11,13 +11,15 @@
 
 ### Goal
 
-This project will investigate a simple question: How can organizations create rules that work with how people work? The idea is that institutions succeed when they tap into existing incentive loops. This is true of governments, teams, start-ups, and large corporations. These organizations may have blips of incentive compatibility, but this model will investigate how we can design the system itself to select for this trait of "working with how people work." 
+This project will investigate a simple question: How can organizations create rules that work with how people work? 
+
+The idea is that institutions succeed when they tap into existing incentive loops. This is true of governments, teams, start-ups, and large corporations. Incentive compatibility may, at times, arrive serendipitously, but this model will investigate how we can design the system to select for this trait of "working with how people work." 
 
 Incentive compatibility in our context will be defined as a circumstance in which rules match preferences. That the preferences (and thus rules) will be within the span of acceptable and productive behavior is taken for granted. The definition of "rules" will be kept intentionally vague: it comprises the idea of both norms (colloquially concocted and enforced expectations of team-member behavior) and rules (explicit policies). Likewise with our understanding of preferences, which comprises things that an individual would cogitate and express explicitly as well as more implicit personality forces. 
 
 ### Justification
 
-ABM is a perfect fit for this project because one of the main elements of complexity it deals with is the fact of heterogeneous actors. A set of rules at any one moment in time may work great, but the second that employees churn, this compatibility may be destroyed - such is the nature of preference heterogeneity. What works well for one person does not work well for another. 
+ABM is a good fit for this project because one of the main elements of complexity it deals with is the fact of heterogeneous actors. A set of rules at any one moment in time may work great, but the second that employees churn, this compatibility may be destroyed - such is the nature of preference heterogeneity. What works well for one person does not work well for another. 
 
 There are also a number of technical advantages. The challenge of this model is to create a system that is flexible enough to respond to the preferences of heterogeneous actors; this will allow it to attain incentive compatibility more often. On the opposite side of this, organizations want and need stability. Rules cannot change every time one employee finds them incompatible. Finally, there is the element of feedback delays. It may take an organization some time to find an instance of incentive compatibility that it would like to address, and then it may take the organization some time to figure out how to address it. Flexibility, stability, and delays are all measurable through the ABM format; they can be visualized and optimized towards. 
 
