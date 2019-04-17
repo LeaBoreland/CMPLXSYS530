@@ -1,0 +1,173 @@
+import random 
+from __future__ import division
+
+class Organization: 
+
+    def __init__(self, hierarchy, complexity, traits):
+        self.Employees = Tree(hierarchy, complexity, traits)
+        self.complexity = complexity
+        self.traits = traits
+        return
+
+    def Global_compatibility(self):
+        compatibility = 0                                                  #result is global compatibility 
+        localcompatibility = 0
+        queue = []                                                         #queue is our tree traversal list  
+        queue.append(self.Employees.root)                                       #first, we add the root to the queue 
+        while len(queue) > 0:                                              #then, while something exists in the queue (while we still have nodes to traverse):
+            currentnode = queue[0]                                         #we name the node we are on currentnode
+            del queue[0]                                                   #then we remove the item from the queue, so we don't check it anymore. 
+            for i in currentnode.children:                                 #for every child that this current node has, we add them to the queue.  
+                queue.append(i)                                            #we traverse these newly added nodes later in the first for loop.
+            if (currentnode != self.Employees.root):
+                localcompatibility = currentnode.Local_Compatibility()
+                compatibility += localcompatibility
+
+        return compatibility 
+    
+    def Dispense_Promotions(self):
+        queue = []
+        queue.append(self.Employees.root)
+        while len(queue) > 0:
+            currentnode = queue[0]
+            del queue[0]
+            for i in currentnode.children:
+                queue.append(i)
+            self.apply_promotion(currentnode)
+        return
+
+    def print_tree(self):
+        queue = []
+        line_str = ""
+        queue.append(self.Employees.root)
+        first_in_line = queue[0]
+        line_str += str(self.Employees.root.Preferences)
+        while len(queue) > 0:
+            currentnode = queue[0]
+            if (currentnode == first_in_line):
+                print(line_str)
+                line_str = ""
+                if (len(currentnode.children) > 0):
+                    first_in_line = currentnode.children[0]
+            del queue[0]
+            for i in currentnode.children:
+                queue.append(i)
+                line_str += str(i.Preferences)
+            line_str += "  "
+        return
+
+    def apply_promotion(self, promoted_node):
+        performance = []
+        if promoted_node.Promoted == True:
+            for i in promoted_node.children: 
+                performance.append([i, i.LocalCompatibility])
+
+            if (len (performance) > 0):
+                performance.sort(key=lambda x: x[1])
+                performance.reverse()
+                temp = performance[0]
+                newboss = temp[0]
+                promoted_node.Preferences = newboss.Preferences
+                newboss.Promoted = True 
+
+            else:
+                #this was a leaf, so now children to promote
+                #generate a new node instead
+                promoted_node.Assign_Preferences(self.complexity, self.traits)
+                pass
+
+        return 
+    
+class Tree:
+    
+    def __init__(self, hierarchy, complexity, traits):
+        self.root = Node()
+        self.root.Assign_Preferences(complexity, traits)
+        self.Build_Tree(hierarchy, complexity, traits)
+        
+    def Build_Tree(self, hierarchy, complexity, traits):                                  # hierarchy = number of kids for each node at each successive level. the root is autoassigned 1 always
+        world = []
+        temp = []
+        firstrun = True                                                    # special procedures for the root
+        for i in hierarchy:                                                # creates levels of hierarchy
+            for children in range(0, i):                                   # let each node on the current level spawn necessary children
+                if firstrun == True:                                       # procedures for the root to have children
+                    a = self.root.Add_Child(complexity, traits)
+                    temp.append(a)
+
+                else:                                                       # procedures for non-root nodes to have children 
+                    for i in world:                                    # we add the necessary number of children for each parent at each level. all the while we are adding the kids to their own temp list, because they will be parents someday too. at the end we swap the lists. 
+                        a = i.Add_Child(complexity, traits)
+                        temp.append(a) 
+            world = temp 
+            temp = []
+            firstrun = False                                                # turns off the boolean once we're done giving kids to the root        
+        return 
+
+class Node (object):
+    
+    def __init__(self): #creates root
+        self.parent = None
+        self.children = []
+        self.Promoted = True
+        self.Preferences = None   
+        self.LocalCompatibility = None
+        
+    def Add_Child(self, complexity, traits): #creates nodes after root 
+        newnode = Node()
+        newnode.parent = self
+        newnode.Promoted = False 
+        newnode.Assign_Preferences(complexity, traits)
+        self.children.append(newnode) 
+        return newnode
+    
+    def Assign_Preferences(self, complexity, traits):                             # gives each node a random preference set in range 
+        self.Preferences = []
+        for i in range(0, traits):
+            x = random.randint(1, complexity)
+            self.Preferences.append(x)
+        return   
+
+    def Local_Compatibility(self):
+        self.LocalCompatibility = 0
+        rules = []
+        for i in self.parent.Preferences:
+            rules.append(i)
+        for i in range(len(self.Preferences)):  
+            if self.Preferences[i] == rules[i]:
+                self.LocalCompatibility += 1
+        return self.LocalCompatibility
+    
+    
+#runtime procedures 
+
+def Setup():
+    hierarchy = [20]
+    temp = 0
+    total = 1
+    for i in hierarchy:
+        if temp > 0: 
+            total += (i * temp) 
+            temp = i * temp
+        else:
+            total += i 
+            temp = i 
+    complexity = 2
+    traits = 5
+    cycles = 500
+    
+    Company = Organization(hierarchy, complexity, traits)
+
+    for i in range(cycles):
+        Company.print_tree()
+        Company.Global_compatibility()
+        Company.Dispense_Promotions()
+        print("=========================")
+        x = (Company.Global_compatibility()) 
+        print(x/total)
+
+  #  Company.print_tree()
+    
+    return 
+
+Setup() 
